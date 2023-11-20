@@ -57,19 +57,23 @@ def create_directional_tuples(input_data):
     directional_tuples = []
     for row_idx, row in enumerate(input_data):
         for col_idx, element in enumerate(row):
-
-            if row_idx != 0:#below
-                if is_climbable(element,input_data[row_idx - 1][col_idx]):
-                    directional_tuples.append((row_idx * len_cols + col_idx, row_idx - 1 * len_cols + col_idx))
-            if row_idx != len_rows - 1:#above
-                if is_climbable(element,input_data[row_idx + 1][col_idx]):
-                    directional_tuples.append((row_idx * len_cols + col_idx, row_idx + 1 * len_cols + col_idx))
-            if col_idx != len_cols - 1:#left
-                if is_climbable(element,input_data[row_idx][col_idx + 1]):
-                    directional_tuples.append((row_idx * len_cols + col_idx, row_idx * len_cols + col_idx + 1))
-            if col_idx != 0:#right
-                if is_climbable(element,input_data[row_idx][col_idx - 1]):
-                    directional_tuples.append((row_idx * len_cols + col_idx, row_idx * len_cols + col_idx - 1))
+            current_index = row_idx * len_cols + col_idx 
+            if row_idx > 0:
+                if is_climbable(element,input_data[row_idx - 1][col_idx]): #above
+                    directional_tuples.append((current_index, row_idx - 1 * len_cols + col_idx))
+                    print(f"added {(current_index, row_idx - 1 * len_cols + col_idx)}")
+            if row_idx < len_rows - 1:
+                if is_climbable(element,input_data[row_idx + 1][col_idx]): #below
+                    directional_tuples.append((current_index, row_idx + 1 * len_cols + col_idx))
+                    print(f"added {(current_index, row_idx + 1 * len_cols + col_idx)}")
+            if col_idx < len_cols - 1:
+                if is_climbable(element,input_data[row_idx][col_idx + 1]): #right
+                    directional_tuples.append((current_index, row_idx * len_cols + col_idx + 1))
+                    print(f"added {(current_index, row_idx * len_cols + col_idx + 1)}")
+            if col_idx > 0:
+                if is_climbable(element,input_data[row_idx][col_idx - 1]): #left
+                    directional_tuples.append((current_index, row_idx * len_cols + col_idx - 1))
+                    print(f"added {(current_index, row_idx * len_cols + col_idx - 1)}")
     return directional_tuples
                 
 
@@ -136,14 +140,20 @@ def dijkstra_boolean_map(boolean_map, source):
 """
 
 lines = read_input("text_input.txt")
-map = convert_map(lines)
+lines_2 = [
+    [ 'S', 'a', 'd'],
+    [ 'a', 'c', 'd'],
+    [ 'b', 'c', 'E'],
+    ]
+map = convert_map(lines_2)
 
 dir_tuples = create_directional_tuples(map)
+print(dir_tuples)
 
 adjacency_matrix =  create_directional_graph(len(dir_tuples), dir_tuples)
 for line in adjacency_matrix:
     print(line)
-    
+
 ret_val = dijkstra_algorithm(adjacency_matrix, 0)
 for line in ret_val:
     print(line)
